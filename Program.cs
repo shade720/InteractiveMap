@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using InteractiveMap.BusinessLogicLayer;
 using InteractiveMap.Forms;
 
 namespace InteractiveMap
@@ -14,7 +15,8 @@ namespace InteractiveMap
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            var markerController = new GoogleMarkerController();
+            Application.Run(new MainForm(markerController));
         }
     }
 }

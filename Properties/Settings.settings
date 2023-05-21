@@ -1,7 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="InteractiveMap.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ConnectionString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=InteractiveMapDb;Integrated Security=True;</Value>
+    </Setting>
+    <Setting Name="Zoom" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="Latitude" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">66.4169575018027</Value>
+    </Setting>
+    <Setting Name="Longitude" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">94.250257522156943</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

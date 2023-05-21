@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using InteractiveMap.BusinessLogicLayer;
+using InteractiveMap.DataAccessLayer;
 using InteractiveMap.Forms;
 
 namespace InteractiveMap
@@ -11,12 +12,29 @@ namespace InteractiveMap
         /// Главная точка входа для приложения.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var markerController = new GoogleMarkerController();
-            Application.Run(new MainForm(markerController));
+
+            var database = new DatabaseAccess(Properties.Settings.Default.ConnectionString);
+            var markerController = new GoogleMarkerController(database);
+            var mapState = new MapState
+            {
+                Zoom = Properties.Settings.Default.Zoom,
+                Latitude = Properties.Settings.Default.Latitude,
+                Longitude = Properties.Settings.Default.Longitude
+            };
+
+            Application.Run(new MainForm(markerController, mapState));
+        }
+
+        public static void SaveMapState(double zoom, double latitude, double longitude)
+        {
+            Properties.Settings.Default.Zoom = zoom;
+            Properties.Settings.Default.Latitude = latitude;
+            Properties.Settings.Default.Longitude = longitude;
+            Properties.Settings.Default.Save();
         }
     }
 }

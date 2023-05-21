@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-using InteractiveMap.BusinessLogicLayer;
+﻿using InteractiveMap.BusinessLogicLayer;
 using InteractiveMap.DataAccessLayer;
 using InteractiveMap.Forms;
+using System;
+using System.Windows.Forms;
 
 namespace InteractiveMap
 {
@@ -23,7 +23,8 @@ namespace InteractiveMap
             {
                 Zoom = Properties.Settings.Default.Zoom,
                 Latitude = Properties.Settings.Default.Latitude,
-                Longitude = Properties.Settings.Default.Longitude
+                Longitude = Properties.Settings.Default.Longitude,
+                MapProvider = GMap.NET.MapProviders.GoogleMapProvider.Instance
             };
 
             Application.Run(new MainForm(markerController, mapState));

@@ -12,11 +12,11 @@ namespace InteractiveMap.BusinessLogicLayer
     public class GoogleMarkerController : IMarkerController
     {
         private readonly DbAccess _db;
-
         public GoogleMarkerController(DbAccess db)
         {
             _db = db;
         }
+
         public async Task<IEnumerable<GMapMarker>> GetAllSavedMarkersAsync()
         {
             return (await _db.GetMarkers()).Select(m =>

@@ -12,6 +12,7 @@ namespace InteractiveMap.Forms
 {
     public partial class MainForm : Form
     {
+        
         private readonly IMarkerController _markerController;
 
         public MainForm(IMarkerController markerController, MapState mapState)
@@ -23,12 +24,15 @@ namespace InteractiveMap.Forms
 
         #region MapInitializing
 
+        private const int MapViewMinZoom = 2;
+        private const int MapViewMaxZoom = 16;
+
         private async void InitializeMap(MapState mapState)
         {
             GMaps.Instance.Mode = AccessMode.ServerAndCache;
             MapView.MapProvider = mapState.MapProvider;
-            MapView.MinZoom = 2;
-            MapView.MaxZoom = 16;
+            MapView.MinZoom = MapViewMinZoom;
+            MapView.MaxZoom = MapViewMaxZoom;
             MapView.Zoom = mapState.Zoom;
             MapView.Position = new PointLatLng(mapState.Latitude, mapState.Longitude);
             MapView.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
@@ -61,10 +65,7 @@ namespace InteractiveMap.Forms
 
         #endregion
 
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Program.SaveMapState(MapView.Zoom, MapView.Position.Lat, MapView.Position.Lng);
-        }
+        #region CurrentPositionPanel
 
         private void MapView_MouseMove(object sender, MouseEventArgs e)
         {
@@ -72,33 +73,11 @@ namespace InteractiveMap.Forms
             CursorLongitude.Text = MapView.FromLocalToLatLng(e.X, e.Y).Lng.ToString(CultureInfo.InvariantCulture);
         }
 
+        #endregion
+
         #region MarkerDragNDrop
 
         private GMarkerGoogle _currentDraggableMarker;
-
-        private void HideDraggableMarker() 
-        {
-            _currentDraggableMarker.IsVisible = false;
-            _currentDraggableMarker.ToolTipMode = MarkerTooltipMode.Never;
-        }
-
-        private void ShowDraggableMarker() 
-        {
-            _currentDraggableMarker.IsVisible = true;
-            _currentDraggableMarker.ToolTipMode = MarkerTooltipMode.Always;
-        }
-
-        private static GMapMarker MoveMarker(GMapOverlay markersOverlay, GMarkerGoogle marker, PointLatLng newPosition)
-        {
-            var newMarker = new GMarkerGoogle(newPosition, marker.Type);
-            newMarker.ToolTip = new GMapToolTip(newMarker);
-            newMarker.ToolTipText = marker.ToolTipText;
-            newMarker.ToolTipMode = MarkerTooltipMode.Always;
-            newMarker.Tag = marker.Tag;
-            markersOverlay.Markers.Remove(marker);
-            markersOverlay.Markers.Add(newMarker);
-            return newMarker;
-        }
 
         private void MapView_MouseDown(object sender, MouseEventArgs e)
         {
@@ -124,11 +103,35 @@ namespace InteractiveMap.Forms
                 await _markerController.ChangeMarkerAsync(newMarkerReplacement);
             }
             else
-            { 
+            {
                 ShowDraggableMarker();
             }
             MapView.CanDragMap = true;
             _currentDraggableMarker = null;
+        }
+
+        private static GMapMarker MoveMarker(GMapOverlay markersOverlay, GMarkerGoogle marker, PointLatLng newPosition)
+        {
+            var newMarker = new GMarkerGoogle(newPosition, marker.Type);
+            newMarker.ToolTip = new GMapToolTip(newMarker);
+            newMarker.ToolTipText = marker.ToolTipText;
+            newMarker.ToolTipMode = MarkerTooltipMode.Always;
+            newMarker.Tag = marker.Tag;
+            markersOverlay.Markers.Remove(marker);
+            markersOverlay.Markers.Add(newMarker);
+            return newMarker;
+        }
+
+        private void HideDraggableMarker()
+        {
+            _currentDraggableMarker.IsVisible = false;
+            _currentDraggableMarker.ToolTipMode = MarkerTooltipMode.Never;
+        }
+
+        private void ShowDraggableMarker()
+        {
+            _currentDraggableMarker.IsVisible = true;
+            _currentDraggableMarker.ToolTipMode = MarkerTooltipMode.Always;
         }
 
         private void MapView_OnMarkerEnter(GMapMarker item)
@@ -142,5 +145,10 @@ namespace InteractiveMap.Forms
         }
 
         #endregion
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Program.SaveMapState(MapView.Zoom, MapView.Position.Lat, MapView.Position.Lng);
+        }
     }
 }

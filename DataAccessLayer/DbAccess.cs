@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace InteractiveMap.DataAccessLayer
 {
-    public class DatabaseAccess
+    public class DbAccess
     {
         private readonly string _connectionString;
-        public DatabaseAccess(string connectionString)
+        public DbAccess(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -48,6 +48,36 @@ namespace InteractiveMap.DataAccessLayer
                 connection?.Dispose();
             }
             return result;
+        }
+
+        public async Task UpdateMarker(MarkerInfo markerInfo)
+        {
+            SqlConnection connection = null;
+            try
+            {
+                connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+                var command = connection.CreateCommand();
+
+                command.CommandText = @"UPDATE Markers SET MarkerName = @MarkerName, MarkerDescription = @MarkerDescription, Latitude = @Latitude, Longitude = @Longitude, ColorNum = @ColorNum WHERE Id = @Id";
+                command.Parameters.AddWithValue("@Id", markerInfo.Id);
+                command.Parameters.AddWithValue("@MarkerName", markerInfo.Name);
+                command.Parameters.AddWithValue("@MarkerDescription", markerInfo.Description);
+                command.Parameters.AddWithValue("@Latitude", markerInfo.Latitude);
+                command.Parameters.AddWithValue("@Longitude", markerInfo.Longitude);
+                command.Parameters.AddWithValue("@ColorNum", markerInfo.ColorNum);
+
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"{e.Message}\r\n{e.StackTrace}");
+            }
+            finally
+            {
+                connection?.Close();
+                connection?.Dispose();
+            }
         }
     }
 }

@@ -11,35 +11,45 @@ namespace InteractiveMap.BusinessLogicLayer
 {
     public class GoogleMarkerController : IMarkerController
     {
-        private readonly DatabaseAccess _database;
+        private readonly DbAccess _db;
 
-        public GoogleMarkerController(DatabaseAccess database)
+        public GoogleMarkerController(DbAccess db)
         {
-            _database = database;
+            _db = db;
         }
         public async Task<IEnumerable<GMapMarker>> GetAllSavedMarkersAsync()
         {
-            return (await _database.GetMarkers()).Select(m =>
+            return (await _db.GetMarkers()).Select(m =>
             {
                 var googleMarker = new GMarkerGoogle(new PointLatLng(m.Latitude, m.Longitude), (GMarkerGoogleType)m.ColorNum);
                 googleMarker.ToolTip = new GMapRoundedToolTip(googleMarker);
-                googleMarker.ToolTipText = m.Name;
+                googleMarker.ToolTipText = $"{m.Name}\r\n{m.Description}";
                 googleMarker.ToolTipMode = MarkerTooltipMode.Always;
+                googleMarker.Tag = m.Id;
                 return googleMarker;
             });
         }
-        
-        public IEnumerable<GMapMarker> ChangeMarker(int id)
+
+        public async Task ChangeMarkerAsync(GMapMarker newMarker)
+        {
+            var nameAndDescription = newMarker.ToolTipText.Split('\n');
+            await _db.UpdateMarker(new MarkerInfo
+            {
+                Id = (int)newMarker.Tag,
+                Name = nameAndDescription[0],
+                Description = nameAndDescription[1],
+                Latitude = newMarker.Position.Lat,
+                Longitude = newMarker.Position.Lng,
+                ColorNum = (int)((GMarkerGoogle)newMarker).Type
+            });
+        }
+
+        public void ChangeMarker(GMapMarker newMarker)
         {
             throw new System.NotImplementedException();
         }
 
         public IEnumerable<GMapMarker> GetAllSavedMarkers()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<IEnumerable<GMapMarker>> ChangeMarkerAsync(int id)
         {
             throw new System.NotImplementedException();
         }

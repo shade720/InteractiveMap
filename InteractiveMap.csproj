@@ -82,7 +82,7 @@
   <ItemGroup>
     <Compile Include="BusinessLogicLayer\IMarkerController.cs" />
     <Compile Include="BusinessLogicLayer\GoogleMarkerController.cs" />
-    <Compile Include="DataAccessLayer\DatabaseAccess.cs" />
+    <Compile Include="DataAccessLayer\DbAccess.cs" />
     <Compile Include="DataAccessLayer\MapState.cs" />
     <Compile Include="DataAccessLayer\MarkerInfo.cs" />
     <Compile Include="Forms\MainForm.cs">

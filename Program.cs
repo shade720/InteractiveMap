@@ -17,7 +17,7 @@ namespace InteractiveMap
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var database = new DatabaseAccess(Properties.Settings.Default.ConnectionString);
+            var database = new DbAccess(Properties.Settings.Default.ConnectionString);
             var markerController = new GoogleMarkerController(database);
             var mapState = new MapState
             {

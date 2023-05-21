@@ -8,7 +8,7 @@ namespace InteractiveMap.BusinessLogicLayer
     {
         IEnumerable<GMapMarker> GetAllSavedMarkers();
         Task<IEnumerable<GMapMarker>> GetAllSavedMarkersAsync();
-        IEnumerable<GMapMarker> ChangeMarker(int id);
-        Task<IEnumerable<GMapMarker>> ChangeMarkerAsync(int id);
+        void ChangeMarker(GMapMarker newMarker);
+        Task ChangeMarkerAsync(GMapMarker newMarker);
     }
 }
